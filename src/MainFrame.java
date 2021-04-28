@@ -172,7 +172,7 @@ public class MainFrame extends JFrame {
             final String senderName = textFieldFrom.getText();
             final String destinationAddress = textFieldTo.getText();
             final String message = textAreaOutgoing.getText();
-            final String Datt = date;
+            final String Date = date;
 
 
             if(!destinationAddress.isEmpty()){
@@ -218,10 +218,10 @@ public class MainFrame extends JFrame {
 
             out.writeUTF(senderName);
             out.writeUTF(message);
-            out.writeUTF(Datt);
+            out.writeUTF(Date);
             socket.close();
 
-            textAreaIncoming.append(Datt+"  Я -> " + destinationAddress + ": " + message + "\n");
+            textAreaIncoming.append(Date+"  Я -> " + destinationAddress + ": " + message + "\n");
             textAreaOutgoing.setText("");
 
         }
