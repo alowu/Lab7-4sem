@@ -164,6 +164,83 @@ public class MainFrame extends JFrame {
         }).start();
     }
 
+
+
+
+    private void sendMessage() {
+        try {
+            final String senderName = textFieldFrom.getText();
+            final String destinationAddress = textFieldTo.getText();
+            final String message = textAreaOutgoing.getText();
+            final String Datt = date;
+
+
+            if(!destinationAddress.isEmpty()){
+
+                Pattern p = Pattern.compile("\\d\\d?\\d?.\\d\\d?\\d?.\\d\\d?\\d?.\\d\\d?\\d?");
+                Matcher m = p.matcher(destinationAddress);
+                boolean b = m.matches();
+
+
+                if(!b) {
+
+                    JOptionPane.showMessageDialog(this, "Некоректно введен IP" , "Ошибка",
+                            JOptionPane.ERROR_MESSAGE);
+                    textFieldTo.grabFocus();
+                    return;
+                }
+
+            }
+
+            if (senderName.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Введите имя отправителя", "Ошибка",
+                        JOptionPane.ERROR_MESSAGE);
+                textFieldFrom.grabFocus();
+                return;
+            }
+
+            if (destinationAddress.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Введите адрес узла-получателя", "Ошибка",
+                        JOptionPane.ERROR_MESSAGE);
+                textFieldTo.grabFocus();
+                return;
+            }
+            if (message.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Введите текст сообщения", "Ошибка",
+                        JOptionPane.ERROR_MESSAGE);
+                textAreaOutgoing.grabFocus();
+                return;
+            }
+
+
+            final Socket socket = new Socket(destinationAddress, SERVER_PORT);
+            final DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+            out.writeUTF(senderName);
+            out.writeUTF(message);
+            out.writeUTF(Datt);
+            socket.close();
+
+            textAreaIncoming.append(Datt+"  Я -> " + destinationAddress + ": " + message + "\n");
+            textAreaOutgoing.setText("");
+
+        }
+
+        catch (UnknownHostException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(MainFrame.this,
+                    "Не удалось отправить сообщение: узел-адресат не найден",
+                    "Ошибка", JOptionPane.ERROR_MESSAGE);
+        }
+
+        catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(MainFrame.this, "Не удалось отправить сообщение",
+                    "Ошибка",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
